@@ -1,3 +1,6 @@
+body{
+    background-color: #f5deb3;
+}
 header {
     display: flex;
     background: #b38df7;
@@ -35,6 +38,7 @@ h4 {
     color: grey;
     margin-left: 4rem;
     margin-top: 0rem;
+    padding-bottom: 1rem;
     float: top;
 }
 .search-line {
@@ -123,6 +127,10 @@ h4 {
 .button:active {
     background: #C7AAFB;
 }
+.main {
+    float: left;
+}
+
 .right-panel {
     display: inline-block;
     width: calc(22rem + 15rem);

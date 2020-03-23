@@ -240,9 +240,9 @@ var posts = (function () {
 
     function compArrays (postsTags, filterConfigTags) {
         let equal = true;
-        if (postsTags.length === filterConfigTags.length) {
+        if (filterConfigTags != null && postsTags.length === filterConfigTags.length) {
             for (let i = 0; i < postsTags.length; i++) {
-                if (postsTags[i] !== filterConfigTags[j]) {
+                if (postsTags[i] !== filterConfigTags[i]) {
                     equal = false;
                 }
             }
@@ -254,7 +254,7 @@ var posts = (function () {
 
     function validatePost (post) {
         if (typeof post.id === 'string' && post.id !== '' && typeof post.description === 'string'
-            && post.description !== '' && post.createdAt === Date && typeof post.author === 'string'
+            && post.description !== '' && typeof post.createdAt === typeof posts[0].createdAt && typeof post.author === 'string'
             && post.author !== '') {
             console.log('method: validatePost, valid.');
             return true;
@@ -265,11 +265,11 @@ var posts = (function () {
     }
 
     return {
-        getPost: function () {
+        getPost: function (id) {
             let post = posts.find(item => item.id === id);
             if(post !== null) {
                 console.log('method: getPost, found.');
-                return post
+                return post;
             }
             else {
                 console.log('method: getPost, not found.');
@@ -277,24 +277,37 @@ var posts = (function () {
             }
         },
 
+        removePost: function (id) {
+            let post = posts.find(item => item.id === id);
+            if(post !== null) {
+                posts.splice(posts.findIndex(item => item.id === id), 1);
+                console.log('method: removePost, post removed.');
+                return true;
+            }
+            else {
+                console.log('method: removePost, post not found.')
+                return false;
+            }
+        },
+
         getPosts: function (skip, top, filterConfig) {
         let filteredPosts = [];
         if (filterConfig) {
-            if (filterConfig.getAllKeys().has('author')) {
+            if (filterConfig.author !== null) {
                 filteredPosts = posts.filter(item => item.author === filterConfig.author);
             }
-            if (filterConfig.getAllKeys().has('createdAt')) {
+            if (filterConfig.createdAt !== null) {
                 filteredPosts = posts.filter(item => item.createdAt === filterConfig.createdAt);
             }
-            if (filterConfig.getAllKeys().has('tags')) {
+            if (filterConfig.tags !== null) {
                 filteredPosts = posts.filter(item => compArrays(item.tags, filterConfig.tags));
             }
-            if (filterConfig.getAllKeys().has('likes')) {
+            if (filterConfig.likes !== null) {
                 filteredPosts = posts.filter(item => compArrays(item.likes, filterConfig.likes));
             }
 
             filteredPosts.sort(compDate);
-            console.log('method: getPost, filtered and sorted.');
+            console.log('method: getPosts, filtered and sorted.');
         }
         else {
             for (let i = skip; i < skip + top; i++) {
@@ -311,7 +324,8 @@ var posts = (function () {
 
     addPost: function (post) {
         if (validatePost(post)) {
-            post.id = post[length - 1].id + 1;
+            post.id = posts[posts.length - 1].id + 1;
+            post.createdAt = new Date();
             posts.push(post);
             console.log('method: addPost, post added.');
             return true;
@@ -321,29 +335,42 @@ var posts = (function () {
         }
     },
 
-   editPost: function (id, post) {
+   editPost: function (id2, post) {
         let complete = false;
-        if (post.getAllKeys().has('description')) {
-            posts[posts.findIndex(item => item.id === id)].description = post.description;
-            complete = true;
-            console.log('method: editPost, description edited.');
-        }
-        if (post.getAllKeys().has('photoLink')) {
-            posts[posts.findIndex(item => item.id === id)].photoLink = post.photoLink;
-            complete = true;
-            console.log('method: editPost, photoLink edited.');
-        }
-        if (post.getAllKeys().has('tags')) {
-            posts[posts.findIndex(item => item.id === id)].tags.splice(0);
-            posts[posts.findIndex(item => item.id === id)].tags.concat(post.tags);
-            complete = true;
-            console.log('method: editPost, tags edited.');
-        }
-        if (post.getAllKeys().has('likes')) {
-            posts[posts.findIndex(item => item.id === id)].likes.splice(0);
-            posts[posts.findIndex(item => item.id === id)].likes.concat(post.likes);
-            complete = true;
-            console.log('method: editPost, likes edited.');
+            if (post.description !== null) {
+                let ind = posts.findIndex(item => item.id == id2);
+                alert(ind);
+                if(validatePost(posts[ind])) {
+                    posts[ind].description = post.description;
+                    complete = true;
+                    console.log('method: editPost, description edited.');
+                }
+            }
+            if (post.photoLink !== null) {
+                if(validatePost(posts[posts.findIndex(item => item.id == id2)])) {
+                    posts[posts.findIndex(item => item.id == id2)].photoLink = post.photoLink;
+                    complete = true;
+                    console.log('method: editPost, photoLink edited.');
+                }
+            }
+            if (post.tags !== null) {
+                if(validatePost(posts[posts.findIndex(item => item.id == id2)])) {
+                    posts[posts.findIndex(item => item.id == id2)].tags.splice(0);
+                    posts[posts.findIndex(item => item.id == id2)].tags.concat(post.tags);
+                    complete = true;
+                    console.log('method: editPost, tags edited.');
+                }
+            }
+            if (post.likes !== null) {
+                if(validatePost(posts[posts.findIndex(item => item.id == id2)])) {
+                    posts[posts.findIndex(item => item.id == id2)].likes.splice(0);
+                    posts[posts.findIndex(item => item.id == id2)].likes.concat(post.likes);
+                    complete = true;
+                    console.log('method: editPost, likes edited.');
+                }
+            }
+        else {
+            complete = false;
         }
         if(complete === true) {
             console.log('method: editPost, post edited.');
@@ -353,15 +380,5 @@ var posts = (function () {
         }
         return complete;
     },
-
-    removePost: function (id) {
-        if(posts.find(item => item.id === id)) {
-            posts.splice(posts.findIndex(item => item.id === id), 1);
-            console.log('method: removePost, post removed.');
-        }
-        else {
-            console.log('method: removePost, post not fount.')
-        }
-    }
     }
 })();

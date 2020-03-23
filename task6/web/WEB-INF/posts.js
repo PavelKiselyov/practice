@@ -266,8 +266,8 @@ var posts = (function () {
 
     return {
         getPost: function (id) {
-            let post = posts.find(item => item.id === id);
-            if(post !== null) {
+            let post = posts.findIndex(item => item.id == id);
+            if(post >= 0) {
                 console.log('method: getPost, found.');
                 return post;
             }
@@ -291,55 +291,70 @@ var posts = (function () {
         },
 
         getPosts: function (skip, top, filterConfig) {
-        let filteredPosts = [];
-        if (filterConfig) {
-            if (filterConfig.author !== null) {
-                filteredPosts = posts.filter(item => item.author === filterConfig.author);
+            let filteredPosts = [];
+            let fill = false;
+            if (filterConfig) {
+                if (filterConfig.author !== undefined) {
+                    filteredPosts = posts.filter(item => item.author === filterConfig.author);
+                    if(posts.findIndex(item => item.author == filterConfig.author) !== -1) {
+                        fill = true;
+                    }
+                }
+                if (filterConfig.createdAt !== undefined) {
+                    filteredPosts = posts.filter(item => item.createdAt === filterConfig.createdAt);
+                    if(posts.findIndex(item => item.createdAt == filterConfig.createdAt) !== -1) {
+                        fill = true;
+                    }
+                }
+                if (filterConfig.tags !== undefined) {
+                    filteredPosts = posts.filter(item => compArrays(item.tags, filterConfig.tags));
+                    if(posts.findIndex(item => item.tags == filterConfig.tags) !== -1) {
+                        fill = true;
+                    }
+                }
+                if (filterConfig.likes !== undefined) {
+                    filteredPosts = posts.filter(item => compArrays(item.likes, filterConfig.likes));
+                    if(posts.findIndex(item => item.likes == filterConfig.likes) !== -1) {
+                        fill = true;
+                    }
+                }
+                if(fill) {
+                    filteredPosts.sort(compDate);
+                    console.log('method: getPosts, filtered and sorted.');
+                }
+                else {
+                    console.log('method: getPosts, not found.');
+                }
             }
-            if (filterConfig.createdAt !== null) {
-                filteredPosts = posts.filter(item => item.createdAt === filterConfig.createdAt);
-            }
-            if (filterConfig.tags !== null) {
-                filteredPosts = posts.filter(item => compArrays(item.tags, filterConfig.tags));
-            }
-            if (filterConfig.likes !== null) {
-                filteredPosts = posts.filter(item => compArrays(item.likes, filterConfig.likes));
+            else {
+                for (let i = skip; i < skip + top; i++) {
+                    filteredPosts.push(posts[i]);
+                }
+                filteredPosts.sort(compDate);
+                console.log('method: getPost, sorted.');
             }
 
-            filteredPosts.sort(compDate);
-            console.log('method: getPosts, filtered and sorted.');
-        }
-        else {
-            for (let i = skip; i < skip + top; i++) {
-                filteredPosts.push(posts[i]);
+
+            return filteredPosts;
+        },
+
+        addPost: function (post) {
+            if (validatePost(post)) {
+                post.id = posts[posts.length - 1].id + 1;
+                post.createdAt = new Date();
+                posts.push(post);
+                console.log('method: addPost, post added.');
+                return true;
+            } else {
+                console.log('method: addPost, post not added.');
+                return false;
             }
+        },
 
-            filteredPosts.sort(compDate);
-            console.log('method: getPost, sorted.');
-        }
-
-
-        return filteredPosts;
-    },
-
-    addPost: function (post) {
-        if (validatePost(post)) {
-            post.id = posts[posts.length - 1].id + 1;
-            post.createdAt = new Date();
-            posts.push(post);
-            console.log('method: addPost, post added.');
-            return true;
-        } else {
-            console.log('method: addPost, post not added.');
-            return false;
-        }
-    },
-
-   editPost: function (id2, post) {
-        let complete = false;
+        editPost: function (id2, post) {
+            let complete = false;
             if (post.description !== null) {
                 let ind = posts.findIndex(item => item.id == id2);
-                alert(ind);
                 if(validatePost(posts[ind])) {
                     posts[ind].description = post.description;
                     complete = true;
@@ -369,16 +384,16 @@ var posts = (function () {
                     console.log('method: editPost, likes edited.');
                 }
             }
-        else {
-            complete = false;
-        }
-        if(complete === true) {
-            console.log('method: editPost, post edited.');
-        }
-        else {
-            console.log('method: editPost, post not edited.');
-        }
-        return complete;
-    },
+            else {
+                complete = false;
+            }
+            if(complete === true) {
+                console.log('method: editPost, post edited.');
+            }
+            else {
+                console.log('method: editPost, post not edited.');
+            }
+            return complete;
+        },
     }
 })();

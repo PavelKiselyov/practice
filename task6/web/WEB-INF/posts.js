@@ -265,7 +265,7 @@ var posts = (function () {
     }
 
     return {
-        getPost: function () {
+        getPost: function (id) {
             let post = posts.find(item => item.id === id);
             if(post !== null) {
                 console.log('method: getPost, found.');

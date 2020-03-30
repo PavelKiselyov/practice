@@ -233,9 +233,15 @@ var posts = (function () {
     ];
 
     function compDate (a, b) {
-        if (a.createdAt > b.createdAt) return 1;
-        if (a.createdAt === b.createdAt) return 0;
-        if (a.createdAt < b.createdAt) return -1;
+        if (a.createdAt > b.createdAt) {
+            return 1;
+        }
+        if (a.createdAt === b.createdAt) {
+            return 0;
+        }
+        if (a.createdAt < b.createdAt) {
+            return -1;
+        }
     }
 
     function compArrays (postsTags, filterConfigTags) {
@@ -254,7 +260,7 @@ var posts = (function () {
 
     function validatePost (post) {
         if (typeof post.id === 'string' && post.id !== '' && typeof post.description === 'string'
-            && post.description !== '' && typeof post.createdAt === typeof posts[0].createdAt && typeof post.author === 'string'
+            && post.description !== '' && post.createdAt !== undefined && !isNaN(Date.parse(post.createdAt)) && typeof post.author === 'string'
             && post.author !== '') {
             console.log('method: validatePost, valid.');
             return true;
@@ -266,8 +272,8 @@ var posts = (function () {
 
     return {
         getPost: function (id) {
-            let post = posts.findIndex(item => item.id == id);
-            if(post >= 0) {
+            let post = posts.find(item => item.id == id);
+            if(post !== undefined) {
                 console.log('method: getPost, found.');
                 return post;
             }
@@ -278,8 +284,7 @@ var posts = (function () {
         },
 
         removePost: function (id) {
-            let post = posts.find(item => item.id === id);
-            if(post !== null) {
+            if(posts.find(item => item.id == id)) {
                 posts.splice(posts.findIndex(item => item.id === id), 1);
                 console.log('method: removePost, post removed.');
                 return true;
@@ -334,7 +339,6 @@ var posts = (function () {
                 console.log('method: getPost, sorted.');
             }
 
-
             return filteredPosts;
         },
 
@@ -383,9 +387,6 @@ var posts = (function () {
                     complete = true;
                     console.log('method: editPost, likes edited.');
                 }
-            }
-            else {
-                complete = false;
             }
             if(complete === true) {
                 console.log('method: editPost, post edited.');

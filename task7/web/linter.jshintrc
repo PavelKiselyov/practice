@@ -1,0 +1,14 @@
+{
+    "esversion": 6,
+    "-W097": false,
+    "browser": true,
+    "curly": true,
+    "devel": true,
+    "globals": {
+        "globalVar": true
+    },
+    "jquery": true,
+    "newcap": false,
+    "undef": true,
+    "unused": true
+}

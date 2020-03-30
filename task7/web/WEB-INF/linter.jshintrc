@@ -1,4 +1,5 @@
 {
+    "esversion": 6,
     "-W097": false,
     "browser": true,
     "curly": true,
@@ -8,10 +9,6 @@
     },
     "jquery": true,
     "newcap": false,
-    "predef": [
-        "GlobalFunction",
-        "GlobalFunction2"
-    ],
     "undef": true,
     "unused": true
 }

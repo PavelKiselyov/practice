@@ -1,0 +1,17 @@
+{
+    "-W097": false,
+    "browser": true,
+    "curly": true,
+    "devel": true,
+    "globals": {
+        "globalVar": true
+    },
+    "jquery": true,
+    "newcap": false,
+    "predef": [
+        "GlobalFunction",
+        "GlobalFunction2"
+    ],
+    "undef": true,
+    "unused": true
+}

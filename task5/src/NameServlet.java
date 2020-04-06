@@ -12,7 +12,11 @@ public class NameServlet extends HttpServlet {
         String name = request.getParameter("name");
         PrintWriter pw = response.getWriter();
         try {
-            pw.println("Name is " + name);
+            if(name.length() <= 100) {
+                pw.println("Name is " + name);
+            } else {
+                pw.println("Error. Name must be less than 100 symbols.");
+            }
         }
         finally {
             pw.close();

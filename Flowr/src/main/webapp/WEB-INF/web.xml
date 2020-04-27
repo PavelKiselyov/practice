@@ -65,4 +65,30 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <servlet>
+    <servlet-name>GetTweet</servlet-name>
+    <servlet-class>TweetsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetTweet</servlet-name>
+    <url-pattern>/tweets/</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>PostTweets</servlet-name>
+    <servlet-class>TweetsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PostTweets</servlet-name>
+    <url-pattern>/search</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DeleteTweet</servlet-name>
+    <servlet-class>TweetsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteTweet</servlet-name>
+    <url-pattern>/tweets</url-pattern>
+  </servlet-mapping>
+
 </web-app>
